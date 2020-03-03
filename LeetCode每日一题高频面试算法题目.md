@@ -106,3 +106,37 @@ public ListNode reverseList(ListNode head){
 空间复杂度：O(n)，由于使用递归，将会使用隐式栈空间。递归深度可能会达到 n层。
 ```
 
+### day03
+
+<img src="images/day03_1.png" style="zoom:80%;" />
+
+解析：
+
+<img src="images/day03_2.png" style="zoom: 67%;" />
+
+```java
+class Solution {
+    public void merge(int[] A, int m, int[] B, int n) {
+        int pa = 0;
+        int pb = 0;
+        int[] sorted = new int[m+n];
+        int curVal = 0;
+        while(pa<m || pb<n){
+            if(pa==m){            //注意判断其中一个是否到达尾部
+                curVal = B[pb++];
+            }else if(pb==n){
+                curVal = A[pa++];
+            }else if(A[pa]<B[pb]){
+                curVal = A[pa++];
+            }else{
+                curVal = B[pb++];
+            }
+           sorted[pa+pb-1] = curVal;
+        }
+        for(int i=0;i<m+n;i++){
+            A[i] = sorted[i];
+        }
+    }
+}
+```
+
