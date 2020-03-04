@@ -140,3 +140,73 @@ class Solution {
 }
 ```
 
+### day04
+
+<img src="images/day04_1.png" style="zoom: 80%;" />
+
+1、先将所有腐烂橘子放入Queue（LinkedList）中，建立Map  key=r*C+c  value=此时此刻腐烂橘子所经历的时间
+
+2、当queue不为空 循环遍历，queue  remove得到腐烂橘子队列中的位置，分析该腐烂橘子上下左右使其腐烂，并把腐烂橘子（key=r*C+c, value=上层腐烂橘子对应时间+1）
+
+3、遍历网格，如果有位置为1，说明有橘子未腐烂，return -1，否则返回map中的最大value
+
+```java
+class Solution {
+    //对行和列进行移动，上，左，下，右
+    int[] dr = new int[]{-1,0,1,0};
+    int[] dc = new int[]{0,-1,0,1};
+    public int orangesRotting(int[][] grid) {
+        int R = grid.length;
+        int C = grid[0].length;
+        
+        Queue<Integer> queue = new LinkedList();
+        Map<Integer,Integer> depth = new HashMap<>();
+        //先遍历寻找该开始就腐烂的橘子
+        for(int r=0;r<R;r++){
+            for(int c=0;c<C;c++){
+                if(grid[r][c]==2){
+                    int code = r*C+c; //将表格中腐烂橘子的二维坐标转化为一个数字编码
+                    queue.add(code);
+                    depth.put(code,0); //key为二维坐标对应的数字编码，value为该编码对应的橘子腐烂用时
+                }
+            }
+        }
+        
+        int ans = 0;
+        while(!queue.isEmpty()){
+            int code = queue.remove();
+            int r = code/C;
+            int c = code%C;
+            for(int k=0;k<4;k++){  //将该腐烂橘子的上下左右依次腐烂
+                int nr = r + dr[k];
+                int nc = c + dc[k];
+                if(nr>=0 && nr<R && nc>=0 && nc<C && grid[nr][nc]==1){
+                    grid[nr][nc] = 2;
+                    int ncode = nr*C+nc;
+                    queue.add(ncode);
+                    depth.put(ncode,depth.get(code)+1); //对腐烂橘子的时刻进行重新设定  注意depth.get(code)不是ncode 
+                    ans = depth.get(ncode);
+                }
+            }
+        }
+        
+        for(int[] r:grid){
+            for(int c :r){
+                if(c==1){
+                    return -1;
+                }
+            }
+        }
+        return ans;
+        
+    }
+}
+
+时间复杂度：O(nm)
+即进行一次广度优先搜索的时间，其中 n=grid.lengthn=grid.length, m=grid[0].lengthm=grid[0].length 
+
+空间复杂度：O(nm)
+需要额外的 disdis 数组记录每个新鲜橘子被腐烂的最短时间，大小为 O(nm)，且广度优先搜索中队列里存放的状态最多不会超过 nmnm 个，最多需要 O(nm) 的空间，所以最后的空间复杂度为 O(nm)。
+
+```
+
