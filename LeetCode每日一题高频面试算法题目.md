@@ -210,3 +210,22 @@ class Solution {
 
 ```
 
+### day05
+
+<img src="images/day05_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int[] distributeCandies(int candies, int num_people) {
+        int[] ans = new int[num_people];
+        int i = 0;
+        while(candies!=0){
+            ans[i%num_people] += Math.min(candies,i+1);  //这里i%num_people用来多次循环数组
+            candies -= Math.min(candies,i+1);
+            i +=1;
+        }
+        return ans;
+    }
+}
+```
+
