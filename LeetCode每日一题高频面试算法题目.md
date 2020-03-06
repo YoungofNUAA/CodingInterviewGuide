@@ -229,3 +229,45 @@ class Solution {
 }
 ```
 
+### day06
+
+<img src="images/day06_1.png" style="zoom:80%;" />
+
+Idea:（滑动数组）
+
+1、因为target>=1 所以滑动数组左右边界初始化为1
+
+2、规定滑动数组尺寸[i,j)  左开右闭
+
+3、循环次数为 i<=target/2  因为数组连续，当滑动数组最左边>=target/2时，数组无论如何也不会出现和为target组合
+
+```java
+class Solution {
+    public int[][] findContinuousSequence(int target) {
+        //滑动窗口解决问题
+        int i = 1;  //窗口最左端
+        int j = 1;  //窗口最右端  [i,j)
+        List<int[]> ans = new ArrayList<>();
+        int sum = 0;
+        while(i<=target/2){
+            if(sum<target){
+                sum += j;
+                j++;
+            }else if(sum>target){
+                sum -= i;
+                i++;
+            }else{
+                int[] temp = new int[j-i];
+                for(int k=i;k<j;k++){
+                    temp[k-i] = k; 
+                }
+                ans.add(temp);
+                sum -= i;
+                i++;
+            }
+        }
+        return ans.toArray(new int[ans.size()][]);
+    }
+}
+```
+
