@@ -271,3 +271,81 @@ class Solution {
 }
 ```
 
+### day07
+
+<img src="images/day07_1.png" style="zoom:80%;" />
+
+idea:
+
+1、初始化一个队列存放每次push_back的数据
+
+2、初始化一个双端队列，要求该队列front-->back为递减，保证front始终为最大值
+
+```java
+class MaxQueue {
+    private Queue<Integer> queue = new LinkedList<>();
+    private Deque<Integer> deque = new ArrayDeque<>();
+    public MaxQueue() {
+       
+    }
+    
+    public int max_value() {
+       return deque.isEmpty() ? -1:deque.peekFirst();
+    }
+    
+    public void push_back(int value) {
+        queue.offer(value);
+        //deque成为递减队列
+        while(!deque.isEmpty()&&deque.peekLast()<value){
+            deque.pollLast();
+        }
+        deque.offerLast(value);
+    }
+    
+    public int pop_front() {
+        Integer result = queue.poll();  //queue存放入队列的各个数据
+        if(!deque.isEmpty()&&deque.peekFirst().equals(result)){
+            deque.pollFirst();
+        }
+        return result==null ? -1:result;
+    }
+}
+
+/**
+ * Your MaxQueue object will be instantiated and called as such:
+ * MaxQueue obj = new MaxQueue();
+ * int param_1 = obj.max_value();
+ * obj.push_back(value);
+ * int param_3 = obj.pop_front();
+ */
+```
+
+### day08
+
+<img src="images/day08_1.png" style="zoom:80%;" />
+
+Idea:
+
+<img src="images/day08_2.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int max = amount+1;
+        int[] dp = new int[amount+1];
+        
+        Arrays.fill(dp,max);
+        dp[0] = 0;
+        for(int i=1;i<=amount;i++){
+            for(int j=0;j<coins.length;j++){
+                if(coins[j]<=i){
+                    dp[i] = Math.min(dp[i],dp[i-coins[j]]+1);
+                }
+            }
+        }
+        
+        return dp[amount]>amount ? -1:dp[amount];
+    }
+}
+```
+
