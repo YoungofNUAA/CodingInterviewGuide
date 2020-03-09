@@ -349,3 +349,46 @@ class Solution {
 }
 ```
 
+### day09（买卖股票系列）
+
+<img src="images/day09_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int maxProfit(int[] prices) {
+        //用minPriceBefore记录截止当前天的最低历史价格
+        int minPriceBefore = Integer.MAX_VALUE;
+        int maxProfit = 0;
+        for(int i=0;i<prices.length;i++){
+            if(prices[i]<minPriceBefore){
+                minPriceBefore = prices[i];
+            }else if(prices[i]-minPriceBefore>maxProfit){
+                maxProfit = prices[i]-minPriceBefore;
+            }
+        }
+        return maxProfit;
+    }
+}
+```
+
+<img src="images/day09_2.png" style="zoom:80%;" />
+
+我们可以直接继续增加加数组的连续数字之间的差值，如果第二个数字大于第一个数字，我们获得的总和将是最大利润。这种方法将简化解决方案。
+
+[1,7,2,3,6,7,6,7]
+
+<img src="images/day09_3.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int maxProfit(int[] prices) {
+        int maxprofit = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > prices[i - 1])
+                maxprofit += prices[i] - prices[i - 1];
+        }
+        return maxprofit;
+    }
+}
+```
+
