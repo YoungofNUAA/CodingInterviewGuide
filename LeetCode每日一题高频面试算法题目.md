@@ -492,3 +492,33 @@ class Solution {
 }
 ```
 
+### day11
+
+<img src="images/day11_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public boolean canThreePartsEqualSum(int[] A) {
+        int sum = 0;
+        for(int i:A){
+            sum+=i;
+        }
+        if(sum%3!=0){
+            return false;
+        }
+        
+        int s = 0;
+        int flag = 0;
+        for(int i=0;i<A.length;i++){
+            s+=A[i];
+            if(sum/3==s){
+                flag++;
+                s = 0;
+            }
+        }
+        return flag>=3;  //防止[10,-10,10,-10,10,-10,10,-10]sum=0 可能导致flag>3
+        
+    }
+}
+```
+
