@@ -522,3 +522,28 @@ class Solution {
 }
 ```
 
+### day12
+
+<img src="images/day12_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    
+    public int gcd(int len1,int len2){
+        int big = len1>len2 ? len1:len2;
+        int small = len1<len2 ? len1:len2;
+        if(big%small==0){
+            return small;
+        }
+        return gcd(big%small,small);
+    }
+    public String gcdOfStrings(String str1, String str2) {
+        if(!(str1+str2).equals(str2+str1)){
+            return "";
+        }
+        int gcdStr = gcd(str1.length(),str2.length());
+        return str1.substring(0,gcdStr);
+    }
+}
+```
+
