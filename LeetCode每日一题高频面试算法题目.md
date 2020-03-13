@@ -547,3 +547,69 @@ class Solution {
 }
 ```
 
+### day13
+
+<img src="images/day13_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int majorityElement(int[] nums) {
+        Map<Integer,Integer> record = new HashMap<>();
+        int n  = nums.length;
+        for(int i=0;i<n;i++){
+            if(!record.containsKey(nums[i])){
+                record.put(nums[i],1);
+            }else{
+                record.put(nums[i],record.get(nums[i])+1);
+            }
+        }
+        int maxValue = 0;
+        int ans = 0;
+        for(Map.Entry<Integer,Integer> entry:record.entrySet()){
+            if(entry.getValue()>maxValue){
+                maxValue = entry.getValue();
+                ans = entry.getKey();
+            }
+        }
+        return ans;
+}
+}
+```
+
+遍历Map的四种方式
+
+```java
+public static void main(String[] args) {
+        // 循环遍历Map的4中方法
+        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        map.put(1, 2);
+        // 1. entrySet遍历，在键和值都需要时使用（最常用）
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            System.out.println("key = " + entry.getKey() + ", value = " + entry.getValue());
+        }
+        // 2. 通过keySet或values来实现遍历,性能略低于第一种方式
+        // 遍历map中的键
+        for (Integer key : map.keySet()) {
+            System.out.println("key = " + key);
+        }
+        // 遍历map中的值
+        for (Integer value : map.values()) {
+            System.out.println("key = " + value);
+        }
+        // 3. 使用Iterator遍历
+        Iterator<Map.Entry<Integer, Integer>> it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Integer, Integer> entry = it.next();
+            System.out.println("key = " + entry.getKey() + ", value = " + entry.getValue());
+        }
+
+        // 4. java8 Lambda
+        // java8提供了Lambda表达式支持，语法看起来更简洁，可以同时拿到key和value，
+        // 不过，经测试，性能低于entrySet,所以更推荐用entrySet的方式
+        map.forEach((key, value) -> {
+            System.out.println(key + ":" + value);
+        });
+        
+    }
+```
+
