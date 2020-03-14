@@ -1,6 +1,6 @@
 ## LeetCode每日一题高频面试算法题目
 
-### day01 
+### day01 （队列实现栈）
 
 <img src="images/day01_1.png" style="zoom:80%;" />
 
@@ -19,7 +19,7 @@ class MyStack {
     public void push(int x) {
         q1.offer(x); //q1接收数据，将q2中所有数据复制到q1，保证先来的数据在后面，新来的数据在前面
         while(!q2.isEmpty()){
-            q1.offer(q2.poll());
+            q1.offer(q2.poll()); //poll返回链表头并删除   offer插入链表尾部
         }
         Queue temp = q1;
         q1 = q2;
@@ -54,7 +54,7 @@ class MyStack {
 
 
 
-### day02
+### day02（反转一个单链表）
 
 <img src="images/day02_1.png" style="zoom: 80%;" />
 
@@ -106,7 +106,7 @@ public ListNode reverseList(ListNode head){
 空间复杂度：O(n)，由于使用递归，将会使用隐式栈空间。递归深度可能会达到 n层。
 ```
 
-### day03
+### day03（合并两个排序数组保证有序）
 
 <img src="images/day03_1.png" style="zoom:80%;" />
 
@@ -140,7 +140,7 @@ class Solution {
 }
 ```
 
-### day04
+### day04（腐烂的橘子）
 
 <img src="images/day04_1.png" style="zoom: 80%;" />
 
@@ -210,7 +210,7 @@ class Solution {
 
 ```
 
-### day05
+### day05（分糖果II）
 
 <img src="images/day05_1.png" style="zoom:80%;" />
 
@@ -229,7 +229,7 @@ class Solution {
 }
 ```
 
-### day06
+### day06（和为s的连续正数序列）
 
 <img src="images/day06_1.png" style="zoom:80%;" />
 
@@ -271,7 +271,7 @@ class Solution {
 }
 ```
 
-### day07
+### day07（队列的最大值）
 
 <img src="images/day07_1.png" style="zoom:80%;" />
 
@@ -320,7 +320,7 @@ class MaxQueue {
  */
 ```
 
-### day08
+### day08（零钱兑换）
 
 <img src="images/day08_1.png" style="zoom:80%;" />
 
@@ -492,7 +492,7 @@ class Solution {
 }
 ```
 
-### day11
+### day11（将数组分成和相等的三部分）
 
 <img src="images/day11_1.png" style="zoom:80%;" />
 
@@ -522,7 +522,7 @@ class Solution {
 }
 ```
 
-### day12
+### day12（字符串的最大公因子）
 
 <img src="images/day12_1.png" style="zoom:80%;" />
 
@@ -547,7 +547,7 @@ class Solution {
 }
 ```
 
-### day13
+### day13（多数元素）
 
 <img src="images/day13_1.png" style="zoom:80%;" />
 
@@ -611,5 +611,73 @@ public static void main(String[] args) {
         });
         
     }
+```
+
+### day14（最长上升子序列）
+
+<img src="images/day14_2.png" alt="动态规划问题" style="zoom:80%;" />
+
+思路：
+
+<img src="images/day14_3.png" style="zoom:50%;" />
+
+<img src="images/day14_4.png" style="zoom:50%;" />
+
+```java
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        //动态规划
+        if(nums.length==0){
+            return 0;
+        }
+        //dp[i]代表数组中第<=i的子数组中最长上升子序列长度
+        int[] dp = new int[nums.length];
+        int maxAns = 1;
+        for(int i=0;i<nums.length;i++){
+            int maxBeforeI = 0; //定义dp[<i]中最大的值，即子数组最长上升子序列长度
+            dp[i] = 1;
+            for(int j=0;j<i;j++){
+                //找到nums[i]>nums[j]时候  dp[1..j]中的最大值
+                //只有nums[i]>nums[i]的时候，才会出现最长生长子序列递增，才去更新dp
+                if(nums[i]>nums[j]){
+                    maxBeforeI = Math.max(maxBeforeI,dp[j]);
+                }
+            }
+            dp[i] = maxBeforeI+1;
+            maxAns = Math.max(maxAns,dp[i]);
+        }
+        return maxAns;
+    }
+}
+```
+
+类似题目：
+
+<img src="images/day14_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public boolean increasingTriplet(int[] nums) {
+        if(nums.length<3){
+            return false;
+        }
+        int[] dp = new int[nums.length];
+        for(int i=0;i<nums.length;i++){
+            int maxBeforeI = 0;
+            for(int j=0;j<i;j++){
+                if(nums[i]>nums[j]){
+                    maxBeforeI = Math.max(maxBeforeI,dp[j]);
+                }
+            }
+            dp[i] = maxBeforeI + 1;
+        }
+        for(int i:dp){
+            if(i>=3){
+                return true;
+            }
+        }
+        return false;
+    }
+}
 ```
 
