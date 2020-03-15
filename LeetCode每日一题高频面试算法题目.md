@@ -681,3 +681,73 @@ class Solution {
 }
 ```
 
+### day15（岛屿的最大面积DFS）
+
+<img src="images/day15_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int maxAreaOfIsland(int[][] grid) {
+        int maxArea = 0;
+        for(int i=0;i<grid.length;i++){
+            for(int j=0;j<grid[i].length;j++){
+                if(grid[i][j]==1){
+                    maxArea = Math.max(maxArea,dfs(i,j,grid));   
+                }
+            }
+        }
+        return maxArea;
+    }
+    //递归遍历寻找最大连续1的个数（岛屿面积）
+    public int dfs(int i,int j,int[][] grid){
+        if(i<0 || j<0 || i>=grid.length || j>=grid[i].length || grid[i][j]==0){
+            return 0;
+        }
+        grid[i][j]=0;//把当前[i][j]置为0  防止回溯遍历出现栈溢出
+        int num = 1;
+        num += dfs(i-1,j,grid);
+        num += dfs(i+1,j,grid);
+        num += dfs(i,j-1,grid);
+        num += dfs(i,j+1,grid);
+        return num;
+    }
+}
+```
+
+```java
+//采用栈的方式   
+class Solution {
+
+    public int maxAreaOfIsland(int[][] grid) {
+        Deque<int[]> stack = new LinkedList<>();
+
+        int[][] moveIndexArray = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        int maxArea = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                stack.add(new int[]{i, j});
+                //计算最大面积
+                int currMaxArea = 0;
+                while (!stack.isEmpty()) {
+                    int[] pop = stack.pop();
+                    int currI = pop[0];
+                    int currJ = pop[1];
+                    if (currI < 0 || currI >= grid.length || currJ < 0 || currJ >= grid[0].length || grid[currI][currJ] == 0) {
+                        continue;
+                    }
+                    currMaxArea++;
+                    grid[currI][currJ] = 0;
+                    for (int[] moveIndex : moveIndexArray) {
+                        stack.add(new int[]{currI + moveIndex[0], currJ + moveIndex[1]});
+                    }
+                }
+                maxArea = Math.max(currMaxArea, maxArea);
+            }
+        }
+
+        return maxArea;
+    }
+
+}
+```
+
