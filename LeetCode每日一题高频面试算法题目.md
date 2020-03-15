@@ -613,7 +613,7 @@ public static void main(String[] args) {
     }
 ```
 
-### day14（最长上升子序列）
+### day14（最长上升子序列--动态规划）
 
 <img src="images/day14_2.png" alt="动态规划问题" style="zoom:80%;" />
 
@@ -651,7 +651,7 @@ class Solution {
 }
 ```
 
-类似题目：
+#### 动态规划类似题目：
 
 <img src="images/day14_1.png" style="zoom:80%;" />
 
@@ -680,6 +680,30 @@ class Solution {
     }
 }
 ```
+
+<img src="images/day14_5.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int maxSum = nums[0];
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        for(int i=1;i<nums.length;i++){
+            if(dp[i-1]>0){
+                dp[i] = dp[i-1]+nums[i];
+            }else{
+                dp[i] = nums[i];
+            }
+            maxSum = Math.max(maxSum,dp[i]);
+        }
+        return maxSum;
+    }
+    
+}
+```
+
+
 
 ### day15（岛屿的最大面积DFS）
 
