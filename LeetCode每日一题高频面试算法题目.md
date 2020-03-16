@@ -775,3 +775,28 @@ class Solution {
 }
 ```
 
+### day16（字符串压缩--双指针）
+
+<img src="images/day16_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public String compressString(String S) {
+        int N = S.length();
+        int i=0;
+        StringBuilder sb = new StringBuilder();
+        while(i<N){
+            int j=i;
+            while(j<N && S.charAt(j)==S.charAt(i)){
+                j++;
+            }
+            sb.append(S.charAt(i)).append(j-i);
+            i = j;
+        }
+        
+        String ans = sb.toString();
+        return ans.length()>=N ? S:ans;
+    }
+}
+```
+
