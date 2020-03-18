@@ -800,3 +800,62 @@ class Solution {
 }
 ```
 
+### day17（拼写单词）
+
+<img src="images/day17_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int countCharacters(String[] words, String chars) {
+        int[] hash = new int[26];
+        for(char c:chars.toCharArray()){
+            hash[c-'a'] += 1;
+        }
+        
+        int[] map = new int[26];
+        int len = 0;
+        for(int i=0;i<words.length;i++){
+            String word = words[i];
+            Arrays.fill(map,0);
+            boolean flag = true;
+            for(char c:words[i].toCharArray()){
+                map[c-'a'] ++;
+                if(map[c-'a']>hash[c-'a']){
+                    flag = false;
+                }
+            }
+            if(flag){
+                len+=word.length();
+            }else{
+                len+=0;
+            }
+        }
+        return len;
+    }
+}
+```
+
+
+
+### day18（矩形重叠）
+
+<img src="images/day18_1.png" style="zoom:80%;" />
+
+```java
+//想象一下，如果我们在平面中放置一个固定的矩形 rec2，那么矩形 rec1 必须要出现在 rec2 的「四周」，也就是说，矩形 rec1 需要满足以下四种情况中的至少一种：
+
+//矩形 rec1 在矩形 rec2 的左侧；
+
+//矩形 rec1 在矩形 rec2 的右侧；
+
+//矩形 rec1 在矩形 rec2 的上方；
+
+//矩形 rec1 在矩形 rec2 的下方。
+class Solution {
+    public boolean isRectangleOverlap(int[] rec1, int[] rec2) {
+        //先判断不重叠的情况  再取反
+        return (!(rec1[1]>=rec2[3]||rec1[3]<=rec2[1]||rec1[2]<=rec2[0]||rec1[0]>=rec2[2]));
+    }
+}
+```
+
