@@ -893,3 +893,39 @@ class Solution {
 }
 ```
 
+### day20（最小的k个数）
+
+<img src="images/day20_1.png" style="zoom:80%;" />
+
+相等于练习冒泡排序吧 哈哈哈
+
+```java
+class Solution {
+    public int[] getLeastNumbers(int[] arr, int k) {
+        sortArray(arr);
+        int[] ans = new int[k];
+        for(int i=0;i<k;i++){
+            ans[i] = arr[i];
+        }
+        return ans;
+    }
+    
+    public void sortArray(int[] arr){
+        for(int i=0;i<arr.length;i++){
+            boolean flag = true;
+            for(int j=0;j<arr.length-i-1;j++){
+                if(arr[j]>arr[j+1]){
+                    flag = false;
+                    int temp = arr[j];
+                    arr[j] = arr[j+1];
+                    arr[j+1] = temp;
+                }
+            }
+            if(flag){
+                break;
+            }
+        }
+    }
+}
+```
+
