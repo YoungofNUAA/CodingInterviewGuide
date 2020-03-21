@@ -929,3 +929,43 @@ class Solution {
 }
 ```
 
+### day21（水壶问题--最大公约数）
+
+<img src="images/day21_1.png" style="zoom:80%;" />
+
+idea:
+
+```
+若a,b是整数,且gcd(a,b)=d，那么对于任意的整数x,y,ax+by都一定是d的倍数，特别地，一定存在整数x,y，使ax+by=d成立。
+     * 裴蜀定理：
+     * 如果所需要的水量是两个水壶容量的最大公约数的倍数，且水量不大于两个水壶的容量之和，那么必然可以用这两个水壶操作得到所需要的水量。
+```
+
+```java
+class Solution {
+    public boolean canMeasureWater(int x, int y, int z) {
+        //解决x或者y中一个为0的情况
+        if(x==0||y==0){
+            if(z==x||z==y){
+                return true;
+            }
+            return false;
+        }
+        if(x+y<z){
+            return false;
+        }
+        int temp = gcd(x,y);
+        return z%temp==0;
+    }
+    
+    private int gcd(int x,int y){
+        int big = x>y? x:y;
+        int small = x<y? x:y;
+        if(big%small==0){
+            return small;
+        }
+        return gcd(big%small,small);
+    }
+}
+```
+
