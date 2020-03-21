@@ -42,6 +42,7 @@ public class TwoStacksQueue {
 		queue.add(5);
 		System.out.println(queue.poll());
 		System.out.println(queue.poll());
+		//你是个二愣子
 	}
 
 }
