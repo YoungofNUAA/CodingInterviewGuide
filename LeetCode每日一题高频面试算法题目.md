@@ -969,3 +969,25 @@ class Solution {
 }
 ```
 
+### day22（使数组唯一的最小增量）
+
+<img src="images/day22_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int minIncrementForUnique(int[] A) {
+        //先排序
+        Arrays.sort(A);
+        int ans = 0;
+        for(int i=1;i<A.length;i++){
+            if(A[i]<=A[i-1]){
+                int temp = A[i];
+                A[i] = A[i-1]+1;
+                ans+=A[i-1]+1-temp;
+            }
+        }
+        return ans;
+    }
+}
+```
+
