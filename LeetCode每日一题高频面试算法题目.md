@@ -991,3 +991,32 @@ class Solution {
 }
 ```
 
+### day23（链表中间节点--快慢指针）
+
+<img src="images/day23_1.png" style="zoom:80%;" />
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode middleNode(ListNode head) {
+        if(head==null){
+            return null;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while(fast!=null && fast.next!=null){
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+}
+```
+
