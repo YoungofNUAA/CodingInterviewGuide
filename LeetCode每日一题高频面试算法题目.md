@@ -1020,3 +1020,33 @@ class Solution {
 }
 ```
 
+### day24（按摩师问题--动态规划）
+
+<img src="images/day24_1.png" style="zoom:80%;" />
+
+**idea:**
+
+```
+dp[i][0] 第i个预约不接受的最佳总时长，则i-1可以接收也可以不接受
+dp[i][1] 第i个预约接收的最佳总时长，则i-1一定为不接受
+```
+
+```java
+class Solution {
+    public int massage(int[] nums) {
+        int n = nums.length;
+        if(n==0) return 0;
+        if(n==1) return nums[0];
+        
+        int[][] dp = new int[n][2];
+        dp[0][1] = nums[0];
+        dp[0][0] = 0;
+        for(int i=1;i<n;i++){
+            dp[i][1] = dp[i-1][0] + nums[i];
+            dp[i][0] = Math.max(dp[i-1][1],dp[i-1][0]);
+        }
+        return Math.max(dp[n-1][0],dp[n-1][1]);
+    }
+}
+```
+
