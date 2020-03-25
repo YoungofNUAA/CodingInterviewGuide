@@ -1050,3 +1050,34 @@ class Solution {
 }
 ```
 
+### day25（三维形体表面积）
+
+<img src="images/day25_1.png" style="zoom:80%;" />
+
+Idea:
+
+1、输入二维数组，数字代表数组i,j位置放置的立方体个数
+
+2、要点是要把i,j方向上立方体重叠面积进行删除
+
+```java
+class Solution {
+    public int surfaceArea(int[][] grid) {
+        int n = grid.length;
+        int area = 0;
+        for(int i = 0;i<n;i++){
+            for(int j=0;j<grid[i].length;j++){
+                int level = grid[i][j];
+                if(level>0){
+                    area += (level<<2)+2;
+                }
+                //删除i,j方向上的重叠面积
+                if(i>0) area -= Math.min(grid[i-1][j],grid[i][j])*2;
+                if(j>0) area -= Math.min(grid[i][j-1],grid[i][j])*2;
+            }
+        }
+        return area;
+    }
+}
+```
+
