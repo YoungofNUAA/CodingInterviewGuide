@@ -1081,3 +1081,56 @@ class Solution {
 }
 ```
 
+### day26（车的可用捕获量）
+
+<img src="images/day26_1.png" style="zoom:80%;" />
+
+<img src="images/day26_2.png" style="zoom:80%;" />
+
+idea：
+
+题目太长迷惑人心，要点如下：
+
+1、先找到白色车的位置 i, j
+
+2、在四个方向上移动车，车停止条件为 a: 超出8x8棋盘界限  b: 遇到白色的象 c: 遇到要找的黑色卒
+
+```java
+class Solution {
+    public int numRookCaptures(char[][] board) {
+        //上下左右
+        int[] dx = {-1,1,0,0};
+        int[] dy = {0,0,-1,1};
+        
+        int ans = 0;
+        for(int i=0;i<8;i++){
+            for(int j=0;j<8;j++){
+                //找到白色车的位置
+                if(board[i][j]=='R'){
+                    //四个方向进行前进
+                    for(int k=0;k<4;k++){
+                        //把白色车的位置赋值给移动变量
+                        int moveX = i;
+                        int moveY = j;
+                        while(true){
+                            moveX += dx[k];
+                            moveY += dy[k];
+                            //判断是否越界  车不能与其他友方（白色）象进入同一个方  
+                            if(moveX<0 || moveX>=8 || moveY<0 || moveY>=8 || board[moveX][moveY]=='B'){
+                                break;
+                            }
+                            
+                            if(board[moveX][moveY]=='p'){
+                                ans++;
+                                break; //在另一个方向查找
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+}
+```
+
