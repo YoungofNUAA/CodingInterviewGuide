@@ -1134,3 +1134,45 @@ class Solution {
 }
 ```
 
+### day27（卡牌分组）
+
+<img src="images/day27_1.png" style="zoom:80%;" />
+
+idea:
+
+求数组中各个相同元素个数的最大公约数，如果最大公约数>=2则返回true  否则返回false
+
+```java
+class Solution {
+    public boolean hasGroupsSizeX(int[] deck) {
+        int[] counter = new int[10000];
+        for(int i=0;i<deck.length;i++){
+            counter[deck[i]] ++;
+        }
+        int x =0;
+        for(int count:counter){
+            if(count>0){
+                //计算最大公约数
+                x = gcd(x,count);
+                if(x==1){
+                    return false;
+                }
+            }
+        }
+        return x>=2;
+    }
+    
+    private int gcd(int a,int b){
+        if(a==0) return b;
+        if(b==0) return a;
+        int max = a>b? a:b;
+        int min = a<b? a:b;
+        if(max%min==0){
+            return min;
+        }
+        return gcd(max%min,min);
+    }
+    
+}
+```
+
