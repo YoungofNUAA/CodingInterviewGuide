@@ -1176,7 +1176,7 @@ class Solution {
 }
 ```
 
-### 阿里巴巴面试题牛客经验学习
+### BFS/DFS问题
 
 #### 快速幂算法
 
@@ -1192,6 +1192,186 @@ class Solution {
             return (half * half * 2);
     }
 ```
+
+#### BFS地图问题（阿里巴巴面试题）
+
+ 一个地图n*m，包含1个起点，1个终点，其他点包括可达点和不可达点。 每一次可以：上下左右移动，或使用1点能量从（i,j)瞬间移动到（n-1-i, m-1-j)，最多可以使用5点能量。
+
+```java
+package cn.nuaa.alibaba;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+
+public class test02 {
+    static int[] dx = {1,-1,0,0};
+    static int[] dy = {0,0,1,-1};
+    static int m;
+    static int n;
+    static int endX;
+    static int endY;
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        n = scanner.nextInt();
+        m = scanner.nextInt();
+        char[][] map = new char[n][m];
+        Queue<Pair> queue = new LinkedList<>();
+        for(int i=0;i<n;i++){
+            map[i] = scanner.next().toCharArray();
+            for(int j=0;j<map[i].length;j++){
+                if(map[i][j]=='S'){
+                    Pair pair = new Pair(i,j);
+                    queue.add(pair);
+                }else if(map[i][j]=='E'){
+                    endX = i;
+                    endY = j;
+                }
+            }
+        }
+        //BFS
+        System.out.println(BFS(map,queue));
+    }
+    public static boolean check(int x,int y){
+        if(x<0 || y<0 || x>=n || y>=m){
+            return false;
+        }
+        return true;
+    }
+    public static int BFS(char[][] map,Queue<Pair>queue){
+        while (!queue.isEmpty()){
+            int size = queue.size();
+            while (size-- >0){
+                Pair top = queue.poll();
+                if(top.x==endX && top.y==endY){
+                    return top.step;
+                }
+                for(int k=0;k<4;k++){
+                    int curX = top.x+dx[k];
+                    int curY = top.y+dy[k];
+                    Pair nextPair = new Pair(curX,curY);
+                    nextPair.step = top.step + 1;
+                    nextPair.fly = top.fly;
+                    if(check(curX,curY) && (map[curX][curY]=='.' || map[curX][curY]=='E')){
+                        queue.add(nextPair);
+                        map[curX][curY] = 'X';
+                    }
+                }
+                int flyX = n-1-top.x;
+                int flyY = m-1-top.y;
+                if(check(flyX,flyY) && top.fly<5 && (map[flyX][flyY]=='.' || map[flyX][flyY]=='E')){
+                    Pair pair = new Pair(flyX,flyY);
+                    pair.step = top.step+1;
+                    pair.fly = top.fly+1;
+                    queue.add(pair);
+                    map[flyX][flyY] = 'X';
+                }
+            }
+        }
+        return -1;
+    }
+}
+
+class Pair{
+    int x;
+    int y;
+    int step;
+    int fly;
+
+    public Pair(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+```
+
+#### LeetCode BFS问题
+
+<img src="images/BFS.png" style="zoom:80%;" />
+
+**总结：**
+
+**1、一般需要定义一个内部类，代表地图每个点，将题目中给的属性加进去，基础属性为坐标x,y**
+
+**2、BFS问题需要queue，DFS问题需要stack**
+
+**3、一般需要定义上下左右坐标转移数组**  
+
+**4、需要定义坐标范围检查函数**
+
+```java
+class Solution {
+    private class Node{
+        int x;
+        int y;
+        public Node(int x,int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    int m = 0;
+    int n = 0;
+    public void solve(char[][] board) {
+        if(board.length==0 || board==null){
+            return;
+        }
+        m = board.length;
+        n = board[0].length;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                boolean isEdge = (i==0 || i==m-1 ||j==0 ||j==n-1) ? true:false;
+                if(isEdge && board[i][j]=='O'){
+                    bfs(board,i,j);
+                }
+            }
+        }
+        
+        //与边界相连的O用#代替  
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(board[i][j] == 'O'){
+                    board[i][j] = 'X';
+                }
+                if(board[i][j] == '#'){
+                    board[i][j] = 'O';
+                }
+            }
+        }
+    }
+    
+    public boolean check(int x,int y){
+        if(x<0 || x>=m || y<0 || y>=n){
+            return false;
+        }
+        return true;
+    }
+    
+    public void bfs(char[][] board,int i,int j){
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(new Node(i,j));
+        board[i][j] = '#';
+        //上下左右
+        int[] dx = {-1,1,0,0};
+        int[] dy = {0,0,-1,1};
+        while(!queue.isEmpty()){
+            Node curNode = queue.poll();
+            
+            for(int k=0;k<4;k++){
+                int nextX = curNode.x + dx[k];
+                int nextY = curNode.y + dy[k];
+                if(check(nextX,nextY) && board[nextX][nextY]=='O'){
+                    queue.add(new Node(nextX,nextY));
+                    board[nextX][nextY] = '#';
+                }
+            }
+        }
+    }
+}
+```
+
+
 
 ### day28（单词的压缩编码---set存储不重复后缀）
 
