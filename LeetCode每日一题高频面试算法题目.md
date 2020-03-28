@@ -1176,3 +1176,58 @@ class Solution {
 }
 ```
 
+### 阿里巴巴面试题牛客经验学习
+
+#### 快速幂算法
+
+```java
+ 
+    public static long pow(int n) {
+        if (n == 0)
+            return 1;
+        long half = pow(n / 2);
+        if (n % 2 == 0)
+            return (half * half);
+        else
+            return (half * half * 2);
+    }
+```
+
+### day28（单词的压缩编码---set存储不重复后缀）
+
+<img src="images/day28_1.png" style="zoom:80%;" />
+
+idea:
+
+如果单词 X 是 Y 的后缀，那么单词 X 就不需要考虑了，因为编码 Y 的时候就同时将 X 编码了。例如，如果 words 中同时有 "me" 和 "time"，我们就可以在不改变答案的情况下不考虑 "me"。
+
+如果单词 Y 不在任何别的单词 X 的后缀中出现，那么 Y 一定是编码字符串的一部分。
+
+因此，目标就是保留所有不是其他单词后缀的单词，最后的结果就是这些单词长度加一的总和，因为每个单词编码后后面还需要跟一个 # 符号。
+
+```java
+class Solution {
+    public int minimumLengthEncoding(String[] words) {
+        Set<String> set = new HashSet<String>(Arrays.asList(words));
+        for(String word:words){
+            for(int i=1;i<word.length();i++){ //i一定从1开始，否则会把该单词从set中移除
+                set.remove(word.substring(i));
+            }
+        }
+        
+        int ans = 0;
+        // for(String word:set){
+        //     ans += word.length()+1；
+        // }
+        Iterator<String> iter = set.iterator();
+        while(iter.hasNext()){
+            String temp = iter.next();
+            ans += temp.length()+1;
+        }
+        return ans;
+    }
+}
+```
+
+
+
