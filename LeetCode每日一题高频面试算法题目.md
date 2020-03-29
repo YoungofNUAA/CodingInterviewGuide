@@ -1288,6 +1288,8 @@ class Pair{
 
 #### LeetCode BFS问题
 
+##### 被围绕的区域
+
 <img src="images/BFS.png" style="zoom:80%;" />
 
 **总结：**
@@ -1371,7 +1373,9 @@ class Solution {
 }
 ```
 
+##### 最远海洋问题
 
+参考day29 ☟
 
 ### day28（单词的压缩编码---set存储不重复后缀）
 
@@ -1409,5 +1413,82 @@ class Solution {
 }
 ```
 
+### day29（BFS最远海洋问题）
 
+<img src="images/day29_1.png" style="zoom:80%;" />
+
+Idea:
+
+我们只要先把所有的陆地都入队，然后从各个陆地**同时开始**一层一层的向海洋扩散，那么最后扩散到的海洋就是最远的海洋！并且这个海洋肯定是被离他最近的陆地给扩散到的！
+
+<img src="images/day29_2.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    
+    int m;
+    int n;
+    
+    //定义内部类标记一些题目要求的属性
+    private class Node{
+        int x;
+        int y;
+        int far;  //定义该点距离出发点大陆的距离
+        public Node(int x,int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    public boolean check(int x,int y){
+        if(x<0 || x>=m || y<0 || y>=n){
+            return false;
+        }
+        return true;
+    }
+    
+    public int maxDistance(int[][] grid) {
+        //首先遍历grid找出所有为1的元素
+        
+        m = grid.length;
+        n = grid[0].length;
+        
+        Queue<Node> queue = new LinkedList<>();
+        
+        for(int i=0;i<m;i++){
+            for(int j = 0;j<n;j++){
+                if(grid[i][j]==1){
+                    queue.add(new Node(i,j));
+                }
+            }
+        }
+        return BFS(queue,grid);
+    }
+    
+    public int BFS(Queue<Node> queue,int[][] grid){
+        int[] dx = {-1,1,0,0};
+        int[]dy = {0,0,-1,1};
+        boolean hasOcean = false;
+        Node newNode = null;
+        while(!queue.isEmpty()){
+            Node curNode = queue.poll();
+            for(int k=0;k<4;k++){
+                int newX = curNode.x+dx[k];
+                int newY = curNode.y+dy[k];
+                if(check(newX,newY) && grid[newX][newY]==0){
+                    newNode = new Node(newX,newY);
+                    newNode.far = curNode.far+1;  //一定是curNode.step
+                    grid[newX][newY] = 1;
+                    hasOcean = true;
+                    queue.add(newNode);
+                }
+            }   
+        }
+        if(!hasOcean){
+            return -1;
+        }
+        return newNode.far;
+    }
+}
+```
 
