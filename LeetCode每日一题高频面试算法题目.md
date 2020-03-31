@@ -1377,6 +1377,10 @@ class Solution {
 
 参考day29 ☟
 
+### 动态规划问题
+
+
+
 ### day28（单词的压缩编码---set存储不重复后缀）
 
 <img src="images/day28_1.png" style="zoom:80%;" />
@@ -1488,6 +1492,130 @@ class Solution {
             return -1;
         }
         return newNode.far;
+    }
+}
+```
+
+### day30（圆圈中最后剩下的数字）
+
+<img src="images/day30_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int lastRemaining(int n, int m) {
+        List<Integer> list = new ArrayList<>();
+        for(int i=0;i<n;i++){
+            list.add(i);
+        }
+        int start = 0;
+        while(list.size()>1){
+            int size = list.size();
+            int delIndex = (start+m-1)%size;
+            list.remove(delIndex);
+            start = delIndex;
+        }
+        return list.get(0);
+    }
+}
+```
+
+### day31（数组升序--冒泡、选择、插入、快速排序算法）
+
+<img src="images/day31_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int[] sortArray(int[] nums) {
+        // BubbleSort(nums);
+        // selectSort(nums);
+        insertSort(nums);
+        return nums;
+    }
+    
+    //冒泡排序
+    public void BubbleSort(int[] nums){
+        int n = nums.length;
+        for(int i=0;i<n-1;i++){
+            boolean isSort = true;
+            for(int j=0;j<n-i-1;j++){
+                if(nums[j+1]<nums[j]){
+                    isSort = false;
+                    int temp = nums[j+1];
+                    nums[j+1] = nums[j];
+                    nums[j] = temp;
+                }
+            }
+            if(isSort){
+                break;
+            }
+        }
+    }
+    
+    //选择排序
+    public void selectSort(int[] nums){
+        int n = nums.length;
+        //遍历n-1次 前n-1选择好了之后 最后一个元素必然满足要求
+        for(int i=0;i<n-1;i++){
+            int minIndex = i;
+            for(int j=i+1;j<n;j++){
+                if(nums[j]<nums[minIndex]){
+                    minIndex = j;
+                }
+            }
+            //交换数据把最小的元素给i
+            int temp = nums[minIndex];
+            nums[minIndex] = nums[i];
+            nums[i] = temp;
+        }
+    }
+    
+    //插入排序
+    public void insertSort(int[] nums){
+        int n = nums.length;
+        //循环数组 将nums[i]插入到 nums[0,i)有序区间中
+        for(int i=1;i<n;i++){
+            int temp = nums[i];
+            int j = i;
+            while(j>0 && (nums[j-1]>temp)){
+                nums[j] = nums[j-1];
+                j--;
+            }
+            nums[j] = temp;
+        }
+    }
+    
+    //快速排序 ---重点掌握
+    public void quickSort(int[] nums,int low,int high){
+        int i,j,base;
+        if(low>high){
+            return;
+        }
+        i = low;
+        j = high;
+        base = nums[low];
+        while(i<j){
+            //从右边找一个比base小的
+            while(base<=nums[j] && (i<j)){
+                j--;
+            }
+            //从左边找一个比base大的
+            while (base>=nums[i] && (i<j)){
+                i++;
+            }
+            //交换i，j数据
+            if(i<j){
+                int temp = nums[i];
+                nums[i] = nums[j];
+                nums[j] = temp;
+            }
+        }
+        //交换base和ij相遇数字
+        int temp = nums[i];
+        nums[i] = base;
+        nums[low] = temp;  //不能写成base=temp  i,j,base都只是 low high nums[low]的代表
+        //递归执行base左边和右边
+        quickSort(nums,low,j-1);
+        quickSort(nums,j+1,high);
     }
 }
 ```
