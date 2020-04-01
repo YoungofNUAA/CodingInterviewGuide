@@ -1620,3 +1620,67 @@ class Solution {
 }
 ```
 
+### day32（有效括号问题）
+
+<img src="images/day32_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+        char[] chars = s.toCharArray();
+        for(char c:chars){
+            if(stack.size()==0){
+                stack.push(c);
+            }else if(isPair(stack.peek(),c)){
+                stack.pop();
+            }else{
+                stack.push(c);
+            }
+        }
+        return stack.size()==0;
+    }
+    
+    public boolean isPair(char a,char b){
+        if(a=='(' && b==')' || a=='{' && b=='}' || a=='[' && b==']'){
+            return true;
+        }
+        return false;
+    }
+}
+```
+
+<img src="images/day32_2.png" style="zoom:80%;" />
+
+今天题目太难理解了，没意思
+
+使 max(depth(A), depth(B)) 的可能取值最小”。这句话其实相当于让A字符串和B字符串的depth尽可能的接近。为什么呢？因为seq对应的栈上，每个左括号都对应一个深度，而这个左括号，要么是A的，要么是B的。所以，栈上的左括号只要按奇偶分配给A和B就可以啦！时间复杂度很明显是 O(n)O(n)的，空间复杂度也是O(n)O(n)（如果算返回的变量的话）。
+
+```java
+class Solution {
+    public int[] maxDepthAfterSplit(String seq) {
+        int[] ans = new int[seq.length()];
+        
+        for(int i=0;i<seq.length();i++){
+            //奇数下标的( 分给A 偶数下标（ 分给B 
+            //奇数下标的) 分给B 偶数下标) 分给A 
+            // if(seq.charAt(i)=='('){
+            //     if(i%2==0){
+            //         ans[i] = 1;
+            //     }else{
+            //         ans[i] = 0;
+            //     }
+            // }else{
+            //     if(i%2==0){
+            //         ans[i] = 0;
+            //     }else{
+            //         ans[i] = 1;
+            //     }
+            // }
+            ans[i] = seq.charAt(i)=='('? i&1:(i+1)&1;
+        }
+        return ans;
+    }
+}
+```
+
