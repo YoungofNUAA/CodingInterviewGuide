@@ -1684,3 +1684,63 @@ class Solution {
 }
 ```
 
+### day33（生命游戏）
+
+<img src="images/day33_1.png" style="zoom:80%;" />
+
+idea：
+
+不能每个点周围判断完之后立即更新周围点的状态，因为当前点的周围状态会是下一次研究的中心点对象，采取标志位方式  2代表：alive-->dead   -1: dead-->alive
+
+```java
+class Solution {
+    public int m;
+    public int n;
+    public void gameOfLife(int[][] board) {
+        int[] dx = {0, 0, 1, -1, 1, 1, -1, -1};
+        int[] dy = {1, -1, 0, 0, 1, -1, 1, -1};
+        
+        m = board.length;
+        n = board[0].length;
+        
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                int cnt = 0; //统计当前细胞周围活细胞数量
+                for(int k=0;k<8;k++){
+                    int next_X = i+dx[k];
+                    int next_Y = j+dy[k];
+                    if(check(next_X,next_Y) && board[next_X][next_Y]>0){//标记为2或者-1只是一个标识位 在没有遍历完之前2，-1还代表他底层的1,0
+                        cnt ++;
+                    }
+                }
+                
+                if(board[i][j]==1){
+                    if(cnt<2 || cnt>3){
+                        board[i][j] = 2; //活细胞-->死亡
+                    }
+                }else if(cnt==3){
+                    board[i][j] = -1;  //死细胞-->复活
+                }
+                
+            }
+        }
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(board[i][j]==2){
+                    board[i][j] = 0;
+                }else if(board[i][j]==-1){
+                    board[i][j] = 1;
+                }
+            }
+        }
+    }
+    
+    public boolean check(int x,int y){
+        if(x<0 || x>=m || y<0 || y>=n){
+            return false;
+        }
+        return true;
+    }
+}
+```
+
