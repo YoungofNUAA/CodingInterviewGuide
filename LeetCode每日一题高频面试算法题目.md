@@ -1744,3 +1744,129 @@ class Solution {
 }
 ```
 
+### day34（字符串到整数）
+
+<img src="images/day34_1.png" style="zoom:80%;" />
+
+<img src="images/day34_2.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int myAtoi(String str) {
+        char[] chars = str.toCharArray();
+        int n = chars.length;
+        int cur = 0;
+        //去掉前导空格
+        while(cur<n && chars[cur]==' '){
+            cur++;
+        }
+        if(cur==n){
+            return 0;
+        }
+
+        boolean negative = false;
+        if(chars[cur]=='-'){
+            negative = true;
+            cur++;
+        }else if(chars[cur]=='+'){
+            cur++;
+        }else if(!Character.isDigit(chars[cur])){
+            return 0;
+        }
+        
+        int ans = 0;
+        int digit = 0;
+        while(cur<n && Character.isDigit(chars[cur])){
+            digit = chars[cur]-'0';
+            if(ans>(Integer.MAX_VALUE-digit)/10){ //保证不溢出
+                return ans = negative? Integer.MIN_VALUE:Integer.MAX_VALUE;
+            }
+            ans = ans*10+digit;
+            cur++;
+        }
+        return negative?-ans:ans;
+    }
+}
+```
+
+### day35（接雨水）
+
+<img src="images/day35_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int trap(int[] height) {
+        //***************暴力解法******************
+        int ans = 0;
+        //从第二个柱体遍历到倒数第二个柱体
+        for(int i=1;i<height.length-1;i++){
+            int leftMax = 0;
+            int rightMax = 0;
+            for(int j=0;j<=i;j++){
+                leftMax = Math.max(leftMax,height[j]);
+            }
+            for(int k=i;k<height.length;k++){
+                rightMax = Math.max(rightMax,height[k]);
+            }
+            ans += Math.min(leftMax,rightMax)-height[i];
+        }
+        return ans;
+        
+        //*****************dp解法********************
+        int n = height.length;
+        int ans = 0;
+        if(n==0){
+            return 0;
+        }
+        int[][] dp = new int[n][2];
+        //dp[i][0] dp[i][1] 表示第i柱子左右两边的最大高度(包括当前柱子高度)
+        dp[0][0] = height[0];
+        dp[n-1][1] = height[n-1];
+        //填充柱子左边高度所有情况
+        for(int i=1;i<n;i++){
+            dp[i][0] = Math.max(dp[i-1][0],height[i]);
+        }
+        for(int j=n-2;j>=0;j--){
+            dp[j][1] = Math.max(dp[j+1][1],height[j]);
+        }
+        for(int k=0;k<n;k++){
+            ans += Math.min(dp[k][0],dp[k][1])-height[k];
+        }
+        return ans;
+    }
+}
+```
+
+### day37（编辑距离）
+
+<img src="images/day37_1.png" style="zoom:80%;" />
+<img src="images/day37_2.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int minDistance(String word1, String word2) {
+        int len1 = word1.length();
+        int len2 = word2.length();
+        //dp[i][j] word1的前i个字符转化为word2前j个字符所使用的最小操作次数
+        int[][] dp = new int[len1+1][len2+1];
+        for(int i = 0;i<=len1;i++){
+            dp[i][0] = i;
+        }
+        for(int j = 0;j<=len2;j++){
+            dp[0][j] = j;
+        }
+        
+        for(int i=1;i<=len1;i++){
+            for(int j=1;j<=len2;j++){
+                if(word1.charAt(i-1) == word2.charAt(j-1)){
+                    dp[i][j] = dp[i-1][j-1];
+                }else{
+                    dp[i][j] = Math.min(Math.min(dp[i][j-1],dp[i-1][j]),dp[i-1][j-1])+1;
+                }
+            }
+        }
+        return dp[len1][len2];
+    }
+}
+```
+
