@@ -1870,3 +1870,41 @@ class Solution {
 }
 ```
 
+### day38（原地旋转数组）
+
+<img src="images/day38_1.png" style="zoom:80%;" />
+
+idea:
+
+1、以对角线为轴进行旋转
+
+2、每行以中点进行旋转
+
+```java
+class Solution {
+    public void rotate(int[][] matrix) {
+        int m = matrix.length;
+        //以对角线为轴进行翻转
+        for(int i = 0;i<m;i++){
+            for(int j = 0;j<m;j++){
+                if(i<j){
+                    int temp = 0;
+                    temp = matrix[i][j];
+                    matrix[i][j] = matrix[j][i];
+                    matrix[j][i] = temp;
+                }
+            }
+        }
+        //对每行数据以中心为轴进行进行翻转
+        int mid = m>>1;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<mid;j++){
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[i][m-1-j];
+                matrix[i][m-1-j] = temp;
+            }
+        }
+    }
+}
+```
+
