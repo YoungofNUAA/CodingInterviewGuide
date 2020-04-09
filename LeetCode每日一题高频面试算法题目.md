@@ -1908,3 +1908,58 @@ class Solution {
 }
 ```
 
+### day39（机器人的运动范围）
+
+<img src="images/day39_1.png" style="zoom:80%;" />
+
+#### DFS:
+
+```java
+class Solution {
+    boolean[][] isVisited;
+    public int movingCount(int m, int n, int k) {
+        isVisited = new boolean[m][n];
+        return dfs(0,0,m,n,k);
+    }
+    public int dfs(int x,int y,int m,int n,int k){
+        if(x<0 || y<0 || x>=m || y>=n || isVisited[x][y]==true || (x%10+x/10+y%10+y/10)>k){
+            return 0;
+        }
+        isVisited[x][y] = true;
+        return 1+dfs(x-1,y,m,n,k)+dfs(x+1,y,m,n,k)+dfs(x,y-1,m,n,k)+dfs(x,y+1,m,n,k);
+    }
+}
+```
+
+#### BFS待续
+
+```
+
+```
+
+### day40（括号生成--递归DFS）
+
+<img src="images/day40_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    List<String> ans = new ArrayList<>();
+    public List<String> generateParenthesis(int n) {
+        dfs(n,n,"");
+        return ans;
+    }
+    public void dfs(int left,int right,String curStr){
+        if(left==0 && right==0){
+            ans.add(curStr);
+            return;
+        }
+        if(left>0){
+            dfs(left-1,right,curStr+"(");
+        }
+        if(right>left){
+            dfs(left,right-1,curStr+")");
+        }
+    }
+}
+```
+
