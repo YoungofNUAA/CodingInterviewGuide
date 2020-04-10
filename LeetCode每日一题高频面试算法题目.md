@@ -1963,3 +1963,22 @@ class Solution {
 }
 ```
 
+### day41（反转字符串里的单词）
+
+<img src="images/day41_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public String reverseWords(String s) {
+        String ss = s.trim();
+        String[] SArrays = ss.split("\\s+");
+        StringBuilder sb = new StringBuilder();
+        for(int i=SArrays.length-1;i>0;i--){
+            sb.append(SArrays[i]).append(" ");
+        }
+        sb.append(SArrays[0]);
+        return sb.toString();
+    }
+}
+```
+
