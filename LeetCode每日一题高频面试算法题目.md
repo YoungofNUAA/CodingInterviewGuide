@@ -1982,3 +1982,52 @@ class Solution {
 }
 ```
 
+### day42（合并K个有序链表---优先队列（堆））
+
+<img src="images/day42_1.png" style="zoom:80%;" />
+
+<img src="images/day42_2.png" style="zoom:80%;" />
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if(lists==null || lists.length==0){
+            return null;
+        }
+        int k = lists.length;
+        PriorityQueue<ListNode> queue = new PriorityQueue<>(new Comparator<ListNode>(){
+           public int compare(ListNode o1,ListNode o2){
+               //升序排序
+               return (o1.val-o2.val);
+           } 
+        });
+        
+        //把每个链表的数据放入queue
+        for(int i=0;i<k;i++){
+            ListNode head  = lists[i];
+            while(head!=null){
+                queue.add(head);
+                head = head.next;
+            }
+        }
+        
+        ListNode temp = new ListNode(-1);
+        ListNode head = temp;
+        while(!queue.isEmpty()){
+            temp.next = queue.poll();
+            temp = temp.next;
+        }
+        temp.next = null;
+        return head.next;
+    }
+}
+```
+
