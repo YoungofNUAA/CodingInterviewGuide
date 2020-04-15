@@ -2074,3 +2074,48 @@ class Solution {
 }
 ```
 
+### day44（01矩阵--BFS VS 最远海洋问题）
+
+<img src="images/day44_1.png" style="zoom:80%;" />
+
+idea:
+
+首先把每个源点 00 入队，然后从各个 00 同时开始一圈一圈的向 11 扩散（每个 11 都是被离它最近的 00 扩散到的 ），扩散的时候可以设置 int[][] dist 来记录距离（即扩散的层次）并同时标志是否访问过。对于本题是可以直接修改原数组 int[][] matrix 来记录距离和标志是否访问的，这里要注意先把 matrix 数组中 1 的位置设置成 -1 （设成Integer.MAX_VALUE啦，m * n啦，10000啦都行，只要是个无效的距离值来标志这个位置的 1 没有被访问过就行辣~）
+
+```java
+class Solution {
+    public int[][] updateMatrix(int[][] matrix) {
+        Queue<int[]> queue = new ArrayDeque<>();
+        int m = matrix.length;
+        int n = matrix[0].length;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(matrix[i][j]==0){
+                    queue.add(new int[] {i,j});
+                }else{
+                    matrix[i][j] = -1;
+                }
+            }
+        }
+        
+        int[] dx = {-1,1,0,0};
+        int[] dy = {0,0,-1,1};
+        
+        while(!queue.isEmpty()){
+            int[] temp = queue.poll();
+            int x = temp[0];
+            int y = temp[1];
+            for(int k =0;k<4;k++){
+                int newX = x + dx[k];
+                int newY = y + dy[k];
+                if(newX>=0 && newX<m && newY>=0 && newY<n && matrix[newX][newY]==-1){
+                    matrix[newX][newY] = matrix[x][y] + 1;
+                    queue.add(new int[] {newX,newY});
+                }
+            }
+        }
+        return matrix;
+    }
+}
+```
+
