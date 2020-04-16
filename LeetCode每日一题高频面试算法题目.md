@@ -2119,3 +2119,35 @@ class Solution {
 }
 ```
 
+### day45（合并区间）
+
+<img src="images/day45_1.png" style="zoom:80%;" />
+
+idea:
+
+<img src="images/day45_2.png" style="zoom:70%;" />
+
+```java
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals,new Comparator<int[]>(){
+           public int compare(int[] o1,int[] o2){
+               return o1[0] - o2[0];
+           } 
+        });
+        
+        int[][] ans = new int[intervals.length][2];
+        int count = -1;
+        for(int[] interval:intervals){
+            if(count==-1 || interval[0]>ans[count][1]){
+                ans[++count] = interval;
+            }else{
+                ans[count][1] = Math.max(ans[count][1],interval[1]);
+            }
+            
+        }
+        return Arrays.copyOf(ans,count+1);
+    }
+}
+```
+
