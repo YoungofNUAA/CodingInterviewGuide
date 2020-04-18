@@ -2151,3 +2151,55 @@ class Solution {
 }
 ```
 
+### day46（跳跃数组）
+
+<img src="images/day46_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public boolean canJump(int[] nums) {
+        int max = 0;
+        for(int i = 0;i<nums.length;i++){
+            if(i>max){
+                return false;
+            }
+            max = Math.max(max,i+nums[i]); //i+nums[i] 位置i所能达到的最远距离
+        }
+        return max>=nums.length-1;
+    }
+}
+```
+
+### day47（盛最多水的容器）
+
+<img src="images/day47_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int maxArea(int[] height) {
+        if(height==null || height.length==0){
+            return 0;
+        }
+        int left = 0;
+        int right = height.length-1;
+        int maxArea = 0;
+        int area = 0;
+        while(left<right){
+            if(height[left]>height[right]){
+                area = height[right]*(right-left);
+                right--;
+            }else if(height[left]<height[right]){
+                area = height[left]*(right-left);
+                left++;
+            }else{
+                area = height[left]*(right-left);
+                right--;
+                left++;
+            }
+            maxArea = Math.max(area,maxArea);
+        }
+        return maxArea;
+    }
+}
+```
+
