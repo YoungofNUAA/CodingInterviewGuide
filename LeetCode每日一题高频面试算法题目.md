@@ -2203,3 +2203,74 @@ class Solution {
 }
 ```
 
+### day48（岛屿数量BFS）
+
+<img src="images/day48_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    
+    private class Node{
+    int x = 0;
+    int y = 0;
+    public Node(int x,int y){
+        this.x = x;
+        this.y = y;
+    }
+    }
+    
+    public int m = 0;
+    public int n = 0;
+    public int[] dx = {-1,1,0,0};
+    public int[] dy = {0,0,-1,1};
+    public int numIslands(char[][] grid) {
+        if(grid==null || grid.length==0){
+            return 0;
+        }
+        
+        m = grid.length;
+        n = grid[0].length;
+        int ans = 0;
+        
+        for(int i = 0;i<m;i++){
+            for(int j = 0;j<n;j++){
+                if(check(i,j) && grid[i][j]=='1'){
+                    ans++;
+                    bfs(grid,i,j);
+                }
+            }
+        }
+        
+        return ans;
+        
+    }
+    
+    public boolean check(int x,int y){
+        if(x<0 || x>=m || y<0 || y>=n){
+            return false;
+        }
+        return true;
+    }
+    
+    public void bfs(char[][] grid,int x,int y){
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(new Node(x,y));
+        grid[x][y] = 0;
+        while(!queue.isEmpty()){
+            Node curNode = queue.poll();
+            for(int k = 0;k<4;k++){
+                int next_x = curNode.x + dx[k];
+                int next_y = curNode.y + dy[k];
+                if(check(next_x,next_y) && grid[next_x][next_y]=='1'){
+                    queue.add(new Node(next_x,next_y));
+                    grid[next_x][next_y] = '0';
+                }
+                
+            }
+        }
+    }
+    
+}
+
+```
+
