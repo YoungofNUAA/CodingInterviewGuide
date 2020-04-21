@@ -2278,6 +2278,12 @@ class Solution {
 
 <img src="images/day49_1.png" style="zoom:80%;" />
 
+例子：
+
+nums = [1,1,2,1,1] k=3
+
+<img src="images/day49_2.png" style="zoom:67%;" />
+
 ```java
 class Solution {
     public int numberOfSubarrays(int[] nums, int k) {
