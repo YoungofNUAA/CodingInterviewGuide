@@ -2282,7 +2282,7 @@ class Solution {
 
 nums = [1,1,2,1,1] k=3
 
-<img src="images/day49_2.png" style="zoom:67%;" />
+<img src="images/day49_02.png" style="zoom:70%;" />
 
 ```java
 class Solution {
