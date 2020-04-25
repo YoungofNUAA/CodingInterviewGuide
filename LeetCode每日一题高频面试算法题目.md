@@ -237,7 +237,7 @@ Idea:（滑动数组）
 
 1、因为target>=1 所以滑动数组左右边界初始化为1
 
-2、规定滑动数组尺寸[i,j)  左开右闭
+2、规定滑动数组尺寸[i,j)  左闭右开
 
 3、循环次数为 i<=target/2  因为数组连续，当滑动数组最左边>=target/2时，数组无论如何也不会出现和为target组合
 
@@ -576,7 +576,7 @@ class Solution {
 }
 ```
 
-遍历Map的四种方式
+#### 遍历Map的四种方式
 
 ```java
 public static void main(String[] args) {
@@ -2312,6 +2312,103 @@ class Solution {
             res += (arr[i] - arr[i - 1]) * (arr[i + k] - arr[i + k - 1]);
         }
         return res;
+    }
+}
+```
+
+### day50（二叉树的右视图）
+
+<img src="images/day50_1.png" style="zoom:80%;" />
+
+BFS层次遍历
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        if(root == null){
+            return res;
+        }
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for(int i=0;i<size;i++){
+                TreeNode node = queue.poll();
+                if(node.left!=null){
+                    queue.offer(node.left);
+                }
+                if(node.right!=null){
+                    queue.offer(node.right);
+                }
+                if(i==size-1){
+                    res.add(node.val);
+                }
+            }
+        }
+        return res;
+    }
+}
+```
+
+### day51（硬币组合）
+
+<img src="images/day51_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int waysToChange(int n) {
+        int[] coins = {25,10,5,1};
+        int[] ans = new int[n+1];
+        ans[0] = 1;
+        for(int coin : coins){
+            for(int i=coin;i<=n;i++){
+                ans[i] = (ans[i]+ans[i-coin])%1000000007;
+            }
+        }
+        return ans[n];
+    }
+}
+```
+
+### day52（全排列--BFS）
+
+<img src="images/day52_1.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> ans = new LinkedList<>();
+        Queue<List<Integer>> queue = new LinkedList<>();
+        queue.add(new LinkedList<Integer>());
+        
+        while(!queue.isEmpty()){
+            List<Integer> list = queue.poll();
+            int size = list.size();
+            if(size == nums.length){
+                ans.add(list);
+                continue;
+            }
+            for(int i = 0; i<=nums.length-1;i++){
+                if(!list.contains(nums[i])){
+                    List<Integer> temp = new LinkedList<>(list);
+                    temp.add(nums[i]);
+                    queue.add(temp);
+                }
+
+            }
+        }
+        return ans;
     }
 }
 ```
