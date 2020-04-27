@@ -2413,3 +2413,44 @@ class Solution {
 }
 ```
 
+### day53（搜索旋转排序数组--二分法查找）
+
+<img src="images/day53_1.png" style="zoom:80%;" />
+
+idea：
+
+<img src="images/day53_2.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int search(int[] nums, int target) {
+        if(nums==null || nums.length==0){
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length-1;
+        int mid = 0;
+        while(left<=right){
+            mid = (left+right)/2;
+            if(nums[mid] == target){
+                return mid;
+            }
+            if(nums[left]<=nums[mid]){
+                if(target>=nums[left] && target<=nums[mid]){
+                    right = mid-1;
+                }else{
+                    left = mid + 1;
+                }
+            }else{
+                if(target>=nums[mid] && target<=nums[right]){
+                    left = mid + 1;
+                }else{
+                    right = mid - 1;
+                }
+            }
+        }
+        return -1;
+    }
+}
+```
+
