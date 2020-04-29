@@ -2454,3 +2454,47 @@ class Solution {
 }
 ```
 
+### day54（数组中数字出现的次数）
+
+<img src="images/day54_1.png" style="zoom:80%;" />
+
+1、如果只有一个出现一次的数字，则结果为全部数字的异或和
+
+2、两个出现一次的数字，需要
+
+如果我们可以把所有数字分成两组，使得：
+
+a:两个只出现一次的数字在不同的组中。
+
+b:相同的数字会被分到相同的组中。
+
+要点：选择所有数字异或和的bit位中，bit=1的二进制作为mask 对所有数字进行与操作，可以实现上面两个分组的要求。
+
+```java
+class Solution {
+    public int[] singleNumbers(int[] nums) {
+        int sum = 0;
+        for(int n:nums){
+            sum ^= n;
+        }
+        //寻找两个不同数字的不同的bit位 即异或和bit=1
+        int mask = 1;
+        while((mask & sum) == 0){
+            mask <<=1;
+        }
+        int a = 0;
+        int b = 0;
+        for(int n:nums){
+            if((mask & n) == 0){
+                a ^= n;
+            }else{
+                b ^= n;
+            }
+        }
+        return new int[]{a,b};
+    }
+}
+```
+
+
+
