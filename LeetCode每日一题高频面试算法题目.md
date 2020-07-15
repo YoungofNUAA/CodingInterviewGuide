@@ -1519,7 +1519,7 @@ class Solution {
 }
 ```
 
-### day31（数组升序--冒泡、选择、插入、快速排序算法）
+### day31（数组升序--冒泡、选择、插入、快速、归并、堆排序算法）
 
 <img src="images/day31_1.png" style="zoom:80%;" />
 
@@ -1619,6 +1619,123 @@ class Solution {
     }
 }
 ```
+
+**堆排序**
+
+```java
+import java.util.Arrays;
+
+/**
+ * Created by chengxiao on 2016/12/17.
+ * 堆排序demo
+ */
+public class HeapSort {
+    public static void main(String []args){
+        int []arr = {9,8,7,6,5,4,3,2,1};
+        sort(arr);
+        System.out.println(Arrays.toString(arr));
+    }
+    public static void sort(int []arr){
+        //1.构建大顶堆
+        for(int i=arr.length/2-1;i>=0;i--){
+            //从第一个非叶子结点从下至上，从右至左调整结构
+            adjustHeap(arr,i,arr.length);
+        }
+        //2.调整堆结构+交换堆顶元素与末尾元素
+        for(int j=arr.length-1;j>0;j--){
+            swap(arr,0,j);//将堆顶元素与末尾元素进行交换
+            adjustHeap(arr,0,j);//重新对堆进行调整
+        }
+
+    }
+
+    /**
+     * 调整大顶堆（仅是调整过程，建立在大顶堆已构建的基础上）
+     * @param arr
+     * @param i
+     * @param length
+     */
+    public static void adjustHeap(int []arr,int i,int length){
+        int temp = arr[i];//先取出当前元素i
+        for(int k=i*2+1;k<length;k=k*2+1){//从i结点的左子结点开始，也就是2i+1处开始
+            if(k+1<length && arr[k]<arr[k+1]){//如果左子结点小于右子结点，k指向右子结点
+                k++;
+            }
+            if(arr[k] >temp){//如果子节点大于父节点，将子节点值赋给父节点（不用进行交换）
+                arr[i] = arr[k];
+                i = k;
+            }else{
+                break;
+            }
+        }
+        arr[i] = temp;//将temp值放到最终的位置
+    }
+
+    /**
+     * 交换元素
+     * @param arr
+     * @param a
+     * @param b
+     */
+    public static void swap(int []arr,int a ,int b){
+        int temp=arr[a];
+        arr[a] = arr[b];
+        arr[b] = temp;
+    }
+}
+```
+
+**归并排序**
+
+```java
+ public class MergeSort{
+ 2
+ 3
+ 4    public int[] sort(int[] sourceArray) throws Exception {
+ 5        // 对 arr 进行拷贝，不改变参数内容
+ 6        int[] arr = Arrays.copyOf(sourceArray, sourceArray.length);
+ 7
+ 8        if (arr.length < 2) {
+ 9            return arr;
+10        }
+11        int middle = (int) Math.floor(arr.length / 2);
+12
+13        int[] left = Arrays.copyOfRange(arr, 0, middle);
+14        int[] right = Arrays.copyOfRange(arr, middle, arr.length);
+15
+16        return merge(sort(left), sort(right));
+17    }
+18
+19    protected int[] merge(int[] left, int[] right) {
+20        int[] result = new int[left.length + right.length];
+21        int i = 0;
+22        while (left.length > 0 && right.length > 0) {
+23            if (left[0] <= right[0]) {
+24                result[i++] = left[0];
+25                left = Arrays.copyOfRange(left, 1, left.length);
+26            } else {
+27                result[i++] = right[0];
+28                right = Arrays.copyOfRange(right, 1, right.length);
+29            }
+30        }
+31
+32        while (left.length > 0) {
+33            result[i++] = left[0];
+34            left = Arrays.copyOfRange(left, 1, left.length);
+35        }
+36
+37        while (right.length > 0) {
+38            result[i++] = right[0];
+39            right = Arrays.copyOfRange(right, 1, right.length);
+40        }
+41
+42        return result;
+43    }
+44
+45}
+```
+
+
 
 ### day32（有效括号问题）
 
@@ -1793,6 +1910,8 @@ class Solution {
 
 <img src="images/day35_1.png" style="zoom:80%;" />
 
+对于每一列来说，他能存的雨水量是他左边最高墙和右边最高墙中较低的那堵墙的高度减去自身墙的高度。所以可以用数组记录每列左右最高墙的高度，然后计算每一列可以存的雨水量
+
 ```java
 class Solution {
     public int trap(int[] height) {
@@ -1820,8 +1939,8 @@ class Solution {
         }
         int[][] dp = new int[n][2];
         //dp[i][0] dp[i][1] 表示第i柱子左右两边的最大高度(包括当前柱子高度)
-        dp[0][0] = height[0];
-        dp[n-1][1] = height[n-1];
+        dp[0][0] = height[0];   //左
+        dp[n-1][1] = height[n-1];  //右
         //填充柱子左边高度所有情况
         for(int i=1;i<n;i++){
             dp[i][0] = Math.max(dp[i-1][0],height[i]);
@@ -2496,5 +2615,252 @@ class Solution {
 }
 ```
 
+### day55 (无重复字符的最长子串----华为面试题目)
 
+思路：
+标签：滑动窗口
+定义一个 map 数据结构存储 (k, v)，其中 key 值为字符，value 值为字符位置 +1，加 1 表示从字符位置后一个才开始不重复
+我们定义不重复子串的开始位置为 start，结束位置为 end
+随着 end 不断遍历向后，会遇到与 [start, end] 区间内字符相同的情况，此时将字符作为 key 值，获取其 value 值，并更新 start，此时 [start, end] 区间内不存在重复字符
+无论是否更新 start，都会更新其 map 数据结构和结果 ans。
+
+```java
+    public static int numOfChars2(String s){
+        int n = s.length();
+        int ans = 0;
+        Map<Character,Integer> map = new HashMap<>();
+        for(int start = 0,end = 0; end<n; end++){
+            char c = s.charAt(end);
+            if(map.containsKey(c)){
+                start = Math.max(map.get(c),start);
+            }
+            ans = Math.max(ans,end-start+1);
+            map.put(s.charAt(end),end+1);
+        }
+        return ans;
+    }
+```
+
+### day56（重构二叉树）
+
+<img src="images/day56_1.png" style="zoom:80%;" />
+
+**递归解析：**
+**递推参数**： 前序遍历中根节点的索引pre_root、中序遍历左边界in_left、中序遍历右边界in_right。
+**终止条件**： 当 in_left > in_right ，子树中序遍历为空，说明已经越过叶子节点，此时返回 nullnull 。
+递推工作：
+**建立根节点**root： 值为前序遍历中索引为pre_root的节点值。
+	搜索根节点root在中序遍历的索引i： 为了提升搜索效率，本题解使用哈希表 dic 预存储中序遍历的值与索引的	映射关系，每次搜索的时间复杂度为 O(1)O(1)。
+    构建根节点root的左子树和右子树： 通过调用 recur() 方法开启下一层递归。
+**左子树**： 根节点索引为 pre_root + 1 ，中序遍历的左右边界分别为 in_left 和 i - 1。
+**右子树**： 根节点索引为 i - in_left + pre_root + 1（即：根节点索引 + 左子树长度 + 1），中序遍历的左右边界分别为 i + 1 和 in_right。
+**返回值**： 返回 root，含义是当前递归层级建立的根节点 root 为上一递归层级的根节点的左或右子节点。
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    HashMap<Integer,Integer> map = new HashMap<>();
+    int[] OriPreOrder;
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        OriPreOrder = preorder;
+        for(int i=0;i<preorder.length;i++){
+            map.put(inorder[i],i);
+        }
+        return recur(0,0,inorder.length-1);
+    }
+    
+    public TreeNode recur(int pre_root,int in_left,int in_right){
+        if(in_left>in_right){
+            return null;
+        }
+        TreeNode root = new TreeNode(OriPreOrder[pre_root]);
+        int i = map.get(OriPreOrder[pre_root]);
+        root.left = recur(pre_root+1,in_left,i-1);
+        root.right = recur(pre_root+(i-in_left)+1,i+1,in_right);
+        return root;
+    }
+}
+```
+
+### day57（Z型遍历二叉树）
+
+```java
+class Node {
+    char value;  //数据域
+    Node left;  //左孩子节点
+    Node right;   //右孩子节点
+
+    //}
+    public Node(char value) {
+        this.value = value;
+    }
+}
+
+public  ArrayList<ArrayList<Character>> zigzagOrder(Node root) {
+            int level = 1;   //指示当前遍历的层数
+            Stack<Node> stack1 = new Stack<>();  //栈1存奇数节点
+            stack1.push(root);   //将根节点入栈
+            Stack<Node> stack2 = new Stack<>();  //栈2存偶数节点
+            ArrayList<ArrayList<Character>> list = new ArrayList<>();
+            while (!stack1.empty() || !stack2.empty()) {
+                if (level % 2 != 0) {  //奇数层,该层为奇数层，叶子节点从右向左入栈，所以该层的叶子节点应入偶数栈
+                    ArrayList<Character> t = new ArrayList<>();
+                    while (!stack1.empty()) {
+                        Node cur = stack1.pop();
+                        if (cur != null) {
+                            t.add(cur.value);
+                            stack2.push(cur.left);
+                            stack2.push(cur.right);
+                        }
+                    }
+                    if (!t.isEmpty()) {
+                        list.add(t);
+                        level++;
+                    }
+                } else {
+                    ArrayList<Character> t = new ArrayList<>();
+                    while (!stack2.empty()) {
+                        Node cur = stack2.pop();
+                        if (cur != null) {
+                            t.add(cur.value);
+                            stack1.push(cur.right);
+                            stack1.push(cur.left);
+                        }
+                    }
+                    if (!t.isEmpty()) {
+                        list.add(t);
+                        level++;
+                    }
+                }
+
+            }
+            return list;
+        }
+```
+
+### day58（对称二叉树）
+
+<img src="images/day58.png" style="zoom:70%;" />
+
+```java
+//递归
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        return check(root, root);
+    }
+
+    public boolean check(TreeNode p, TreeNode q) {
+        if (p == null && q == null) {
+            return true;
+        }
+        if (p == null || q == null) {
+            return false;
+        }
+        return p.val == q.val && check(p.left, q.right) && check(p.right, q.left);
+    }
+}
+
+
+
+//迭代
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        return check(root, root);
+    }
+
+    public boolean check(TreeNode u, TreeNode v) {
+        Queue<TreeNode> q = new LinkedList<TreeNode>();
+        q.offer(u);
+        q.offer(v);
+        while (!q.isEmpty()) {
+            u = q.poll();
+            v = q.poll();
+            if (u == null && v == null) {
+                continue;
+            }
+            if ((u == null || v == null) || (u.val != v.val)) {
+                return false;
+            }
+
+            q.offer(u.left);
+            q.offer(v.right);
+
+            q.offer(u.right);
+            q.offer(v.left);
+        }
+        return true;
+    }
+}
+
+```
+
+### day59（多少质数的和等于输入的这个整数）
+
+给定一个正整数，编写程序计算有多少对质数的和等于输入的这个正整数，并输出结果。输入值小于1000。
+如，输入为10, 程序应该输出结果为2。（共有两对质数的和为10,分别为(5,5),(3,7)） 
+
+##### 输入描述:
+
+```
+输入包括一个整数n,(3 ≤ n < 1000)
+```
+
+```java
+package ICBC;
+
+import java.util.Scanner;
+
+public class Test11 {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNext()){
+            int n = scanner.nextInt();
+            int count = 0;
+            for (int j=1;j<=n;j++){
+                if(isPrime(j)){
+                    System.out.print(j+" ");
+                }
+            }
+            for(int i=2;i<=n/2;i++){
+                if(isPrime(i) && isPrime(n-i)){
+                    count ++;
+                }
+            }
+            System.out.println(count);
+        }
+    }
+
+    public static boolean isPrime(int num){
+        if(num<=1){
+            return false;
+        }
+        if(num==2){
+            return true;
+        }
+
+        boolean flag = true;
+        for(int i =2;i<=Math.sqrt(num);i++){
+            if(num%i==0){
+                flag = false;
+                break;
+            }
+        }
+        if(flag){
+            return true;
+        }else{
+            return false;
+        }
+    }
+}
+
+```
 
