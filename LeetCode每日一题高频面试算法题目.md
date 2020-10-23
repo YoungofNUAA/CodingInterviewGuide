@@ -5,51 +5,54 @@
 <img src="images/day01_1.png" style="zoom:80%;" />
 
 ```java
-class MyStack {
-    private Queue<Integer> q1; //输入
-    private Queue<Integer> q2; //输出
-    private int top;
-    /** Initialize your data structure here. */
-    public MyStack() {
-        q1 = new LinkedList<Integer>();
-        q2 = new LinkedList<Integer>();
-    }
-    
-    /** Push element x onto stack. */
-    public void push(int x) {
-        q1.offer(x); //q1接收数据，将q2中所有数据复制到q1，保证先来的数据在后面，新来的数据在前面
-        while(!q2.isEmpty()){
-            q1.offer(q2.poll()); //poll返回链表头并删除   offer插入链表尾部
+ public static class QueueToStack{
+        private Queue<Integer> queue;
+        private Queue<Integer> help;
+        public QueueToStack(){
+            queue = new LinkedList<Integer>();
+            help = new LinkedList<Integer>();
         }
-        Queue temp = q1;
-        q1 = q2;
-        q2 = temp;
+  
+        public void push(int pushInt){
+            queue.add(pushInt);
+        }
+        /**
+         * @Description: 弹栈操作操作
+         * 弹栈时，queue队列所有数据迁移至 help 返回最后一个数 并交换指针
+         */
+        public Integer pop(){
+            if (queue.isEmpty())
+                throw new RuntimeException("栈空！");
+            while (queue.size()>1){
+                help.add(queue.poll());
+            }
+            int temp = queue.poll();
+            swap();
+            return temp;
+        }
+  
+        /**
+         * @Description: 栈的peek操作 只返回栈顶元素
+         * 原理同pop操作，但是在最后的一个元素要继续入队 help 因为peek只是返回栈顶 并非弹出
+         */
+        public Integer peek(){
+            if (queue.isEmpty())
+                throw new RuntimeException("栈空");
+            while (queue.size()>1){
+                help.add(queue.poll());
+            }
+            int temp=queue.poll();
+            help.add(temp); //关键地方
+            swap();
+            return temp;
+        }
+  
+        private void swap() {
+            Queue<Integer> temp = queue;
+            queue = help;
+            help = temp;
+        }
     }
-    
-    /** Removes the element on top of the stack and returns that element. */
-    public int pop() {
-        return q2.poll();
-    }
-    
-    /** Get the top element. */
-    public int top() {
-        return q2.peek();
-    }
-    
-    /** Returns whether the stack is empty. */
-    public boolean empty() {
-        return q2.isEmpty();
-    }
-}
-
-/**
- * Your MyStack object will be instantiated and called as such:
- * MyStack obj = new MyStack();
- * obj.push(x);
- * int param_2 = obj.pop();
- * int param_3 = obj.top();
- * boolean param_4 = obj.empty();
- */
 ```
 
 
@@ -1523,6 +1526,8 @@ class Solution {
 
 <img src="images/day31_1.png" style="zoom:80%;" />
 
+<img src="images/day31_2.png" style="zoom:80%;" />
+
 ```java
 class Solution {
     public int[] sortArray(int[] nums) {
@@ -1585,37 +1590,36 @@ class Solution {
     }
     
     //快速排序 ---重点掌握
-    public void quickSort(int[] nums,int low,int high){
-        int i,j,base;
-        if(low>high){
+   public static void quickSort(int[] nums,int L,int R){
+        if(nums.length == 0){
             return;
         }
-        i = low;
-        j = high;
-        base = nums[low];
-        while(i<j){
-            //从右边找一个比base小的
-            while(base<=nums[j] && (i<j)){
-                j--;
-            }
-            //从左边找一个比base大的
-            while (base>=nums[i] && (i<j)){
+
+        int i = L;
+        int j = R;
+        int key = nums[(i+j)/2];
+        while (i<=j){
+            while (nums[i]<key){
                 i++;
             }
-            //交换i，j数据
-            if(i<j){
+            while (nums[j]>key){
+                j--;
+            }
+            if(i<=j){
                 int temp = nums[i];
                 nums[i] = nums[j];
                 nums[j] = temp;
+                i++;
+                j--;
             }
         }
-        //交换base和ij相遇数字
-        int temp = nums[i];
-        nums[i] = base;
-        nums[low] = temp;  //不能写成base=temp  i,j,base都只是 low high nums[low]的代表
-        //递归执行base左边和右边
-        quickSort(nums,low,j-1);
-        quickSort(nums,j+1,high);
+
+        if(i<R){
+            quickSort(nums,i,R);
+        }
+        if(j>L){
+            quickSort(nums,L,j);
+        }
     }
 }
 ```
@@ -1626,7 +1630,6 @@ class Solution {
 import java.util.Arrays;
 
 /**
- * Created by chengxiao on 2016/12/17.
  * 堆排序demo
  */
 public class HeapSort {
@@ -1735,7 +1738,55 @@ public class HeapSort {
 45}
 ```
 
+**归并排序**--**方法****2**
 
+```java
+import java.util.Arrays;
+
+public class Test12 {
+    public static void main(String[] args) {
+        int[] test = new int[]{7,5,8,1,2,9,4,3,6,10};
+        int[] temp = new int[test.length];
+        sort(test,0,test.length-1,temp);
+        System.out.println(Arrays.toString(test));
+    }
+
+    public static void sort(int[] arr,int left,int right,int[] temp){
+        if(left<right){
+            int mid = left + (right-left)/2;
+            sort(arr,left,mid,temp);
+            sort(arr,mid+1,right,temp);
+            merge(arr,left,mid,right,temp);
+        }
+    }
+
+    private static void merge(int[] arr, int left, int mid, int right, int[] temp) {
+        int i = left;
+        int j = mid+1;
+        int t = 0;
+        while (i<=mid && j<=right){
+            if(arr[i]<=arr[j]){
+                temp[t++] = arr[i++];
+            }else{
+                temp[t++] = arr[j++];
+            }
+        }
+        while (i<=mid){
+            temp[t++] = arr[i++];
+        }
+
+        while (j<=right){
+            temp[t++] = arr[j++];
+        }
+
+        t = 0;
+        while (left<=right){
+            arr[left++] = temp[t++];
+        }
+    }
+}
+
+```
 
 ### day32（有效括号问题）
 
@@ -2840,7 +2891,7 @@ public class Test11 {
     }
 
     public static boolean isPrime(int num){
-        if(num<=1){
+        if(num<=1){   //质数：大于1的自然数中只能被1和自身整除的数
             return false;
         }
         if(num==2){
@@ -2862,5 +2913,489 @@ public class Test11 {
     }
 }
 
+```
+
+### day60（移动0到末尾）
+
+<img src="images/day60.png" style="zoom:80%;" />
+
+```java
+    public static int[] moveZeros(int[] arr){
+        if(arr == null){
+            return null;
+        }
+
+        int j = 0;
+        for(int i=0;i<arr.length;i++){
+            if(arr[i] != 0){
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j++] = temp;
+            }
+        }
+        return arr;
+    }
+```
+
+### day61（死锁）
+
+```java
+package ByteDance;
+
+/**
+ * 线程死锁
+ */
+public class Lock {
+    private static Object resource1 = new Object();
+    private static Object resource2 = new Object();
+
+    public static void main(String[] args) {
+        new Thread(()->{
+            synchronized(resource1){
+                System.out.println(Thread.currentThread()+"get resource1");
+                try{
+                    Thread.sleep(1000);
+
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+                System.out.println(Thread.currentThread()+"waitting get resource2");
+                synchronized (resource2){
+                    System.out.println(Thread.currentThread()+"get resource2");
+                }
+            }
+        },"线程1").start();
+
+        new Thread(()->{
+            synchronized (resource2){
+                System.out.println(Thread.currentThread()+"get resource2");
+                try{
+                    Thread.sleep(1000);
+
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+                System.out.println(Thread.currentThread()+"waitting get resource1");
+                synchronized(resource1){
+                    System.out.println(Thread.currentThread()+"get resource1");
+                }
+            }
+        },"线程2").start();
+    }
+    
+    //解决死锁方法---------TODO--------
+            new Thread(() -> {
+            synchronized (resource1) {   //和线程1获取资源顺序同步
+                System.out.println(Thread.currentThread() + "get resource1");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(Thread.currentThread() + "waiting get resource2");
+                synchronized (resource2) {  //和线程1获取资源顺序同步
+                    System.out.println(Thread.currentThread() + "get resource2");
+                }
+            }
+        }, "线程 2").start();
+}
+```
+
+### day62（LRU算法实现）
+
+<img src="images/day62.png" style="zoom:67%;" />
+
+#### 1：LinkedHashMap实现方法(:smile:)
+
+```java
+public class LRU {
+    //把最近使用的放尾巴就好了，删除的时候就删除头。
+    private int capacity;
+    private Map<Integer,Integer> map;
+
+    public LRU(int capacity){
+        this.capacity = capacity;
+        map = new LinkedHashMap<>();
+    }
+
+    public int get(int key){
+        if(!map.containsKey(key)){
+            return -1;
+        }
+        int val = map.remove(key);
+        map.put(key,val);
+        return val;
+    }
+    
+    public void put(int key,int val){
+        if(map.containsKey(key)){
+            map.remove(key);
+            map.put(key,val);
+            return;
+        }
+        map.put(key,val);
+        if(map.size()>capacity){
+            //最近使用的在尾部  所以删除头部
+            map.remove(map.entrySet().iterator().next().getKey());  
+        }
+    }
+```
+
+#### 2：HashMap+双向链表
+
+```java
+package ByteDance;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * HashMap+双向链表实现
+ */
+public class LRULinked {
+    private class DoubleLinkedNode{
+        int key;
+        int val;
+        DoubleLinkedNode pre;
+        DoubleLinkedNode next;
+
+        DoubleLinkedNode(int key,int val){
+            this.key = key;
+            this.val = val;
+            pre = null;
+            next = null;
+        }
+    }
+
+    private int capacity;
+    private Map<Integer,DoubleLinkedNode> map;
+    private DoubleLinkedNode head;
+    private DoubleLinkedNode tail;
+
+    public LRULinked(int capacity){
+        this.capacity = capacity;
+        map = new HashMap<>();
+        head = new DoubleLinkedNode(-1,-1);
+        tail = new DoubleLinkedNode(-1,-1);
+
+        head.next = tail;
+        tail.pre = head;
+    }
+
+    public int get(int key){
+        if(!map.containsKey(key)){
+            return -1;
+        }
+        DoubleLinkedNode node = map.get(key);
+        //先把这个节点删除，再接到尾部
+        node.pre.next = node.next;
+        node.next.pre = node.pre;
+        moveToTail(node);
+
+        return node.val;
+    }
+
+    public void put(int key, int value) {
+        //直接调用这边的get方法，如果存在，它会在get内部被移动到尾巴，不用再移动一遍,直接修改值即可
+        if (get(key) != -1) {
+            map.get(key).val = value;
+            return;
+        }
+        //不存在，new一个出来,如果超出容量，把头去掉
+        DoubleLinkedNode node = new DoubleLinkedNode(key, value);
+        map.put(key, node);
+        moveToTail(node);
+
+        if (map.size() > capacity) {
+            map.remove(head.next.key);
+            head.next = head.next.next;
+            head.next.pre = head;
+        }
+    }
+    private void moveToTail(DoubleLinkedNode node) {
+        node.pre = tail.pre;
+        tail.pre = node;
+        node.pre.next = node;
+        node.next = tail;
+    }
+}
+
+```
+
+### day63（比较版本大小）
+
+```java
+/**
+ * 比较版本号大小
+ * “1.0.1”和“1”，返回1
+ * “1.1.1”和“1.8.2”，返回-1
+ * “1.0.1”和“1.0.01”，返回1
+ */
+public class CompareVersion {
+
+    public static void main(String[] args) {
+        String s1 = "1.0.1";
+        String s2 = "1.1.1";
+        System.out.println(compare(s1,s2));
+    }
+
+    public static int compare(String str1,String str2){
+        char[] chars1 = str1.toCharArray();
+        char[] chars2 = str2.toCharArray();
+        int len1 = chars1.length;
+        int len2 = chars2.length;
+        int len = Math.min(len1,len2);
+
+        for(int i =0;i<len;i++){
+            if(chars1[i]==chars2[i]){
+                continue;
+            }
+
+            if(chars1[i]>chars2[i]){
+                return 1;
+            }else{
+                return -1;
+            }
+        }
+        return 1;
+    }
+}
+```
+
+### day64（三个线程循环打印数字--字节面试）
+
+```java
+package ByteDance;
+
+public class Test05 {
+    public static void main(String[] args) throws InterruptedException{
+        Thread t1 = new Thread(new MyThread1(0));
+        Thread t2 = new Thread(new MyThread1(1));
+        Thread t3 = new Thread(new MyThread1(2));
+        t1.start();
+        t2.start();
+        t3.start();
+        t1.join();
+        t2.join();
+        t3.join();
+
+    }
+}
+
+class MyThread1 implements Runnable{
+    private static Object lock = new Object();
+    private static int count = 0;
+    int no;
+
+    MyThread1(int no){
+        this.no = no;
+    }
+
+    @Override
+    public void run() {
+        while (true){
+            synchronized (lock){
+                if(count>100){
+                    break;
+                }
+                if(count%3==this.no){
+                    System.out.println(this.no+"----->"+count);
+                    count++;
+                }else{
+                    try{
+                        lock.wait();
+                    }catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+                lock.notifyAll();
+            }
+        }
+    }
+}
+
+```
+
+### day65（和最大的连续子数组）
+
+```java
+package ByteDance;
+
+public class Test06 {
+    public static void main(String[] args) {
+        int[] arr = new int[]{1,-2,3,10,-4,7,2,-5};
+        System.out.println(findMaxSum(arr));
+    }
+
+    public static int findMaxSum(int[] arr) {
+        if(arr == null || arr.length == 0){
+            throw new IllegalArgumentException("数组不合法");
+        }
+
+        int curSum = 0;
+        int maxSum = arr[0];
+
+        //找到下标
+        int start = 0;
+        int end = 0;
+        for(int i=0;i<arr.length;i++){
+//            curSum = (arr[i]>arr[i]+curSum)? arr[i]:curSum+arr[i];
+//            maxSum = Math.max(curSum,maxSum);
+            if(arr[i]>arr[i]+curSum){
+                start = i;
+                curSum = arr[i];
+            }else{
+                end = i-1;
+                curSum = arr[i]+curSum;
+            }
+            maxSum = Math.max(curSum,maxSum);
+        }
+        System.out.println("连续数组的下标为："+start+"   "+end);
+        return maxSum;
+    }
+}
+
+```
+
+### day66（二叉树问题）
+
+**1：层次遍历----Queue**
+
+```java
+    public ArrayList<Integer> PrintFromTopToBottom(TreeNode root) {
+        ArrayList<Integer> result = new ArrayList<>();
+        if(root == null)
+            return result;
+        LinkedList<Integer> queue = new LinkedList<>();
+        queue.add(root);
+        while(!queue.isEmpty()){
+            TreeNode node = queue.poll();
+            result.add(node.val);
+            if(node.left != null){
+                queue.add(node.left);
+            }
+            if(node.right != null){
+                queue.add(node.right);
+            }
+        }
+        return result;
+    }
+```
+
+2：**前序遍历**----->**stack**
+
+```java
+public class TreeNode{
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode(int val){
+        this.val = val;
+    }
+}
+//非递归
+public void preOrder(TreeNode root){
+    if(root == null) return;
+    Stack<TreeNode> stack = new Stack<>();
+    stack.push(root);
+    while(!stack.isEmpty()){
+        TreeNode node = stack.pop();
+        System.out.print(node.val);
+        //因为栈是先进后出，所以先压右孩子，再压左孩子
+        if(node.right != null)
+            stack.push(node.right);
+        if(node.left != null)
+            stack.push(node.left);
+    } 
+}
+//递归
+public void preOrder(TreeNode root){
+    if(root == null) return;
+    System.out.print(root.val);
+    preOrder(root.let);
+    preOrder(root.right);
+}
+```
+
+3：**后序遍历**
+
+```java
+public void postOrder(TreeNode root){
+    if(root == null) return;
+    Stack<TreeNode> s1 = new Stack<>();
+    Stack<TreeNode> s2 = new Stack<>();
+    s1.push(root);
+    while(!s1.isEmpty()){
+        TreeNode node = s1.pop();
+        s2.push(node);
+        if(node.left != null)
+           s1.push(node.left);
+       if(node.right != null)
+           s1.push(node.right);
+    }
+    while(!s2.isEmpty())
+        System.out.print(s2.pop().val + " ");
+}
+```
+
+### Bilibili笔试题目：
+
+<img src="images/day63.png" style="zoom:80%;" />
+
+```java
+class Solution {
+    public int findMaxConsecutiveOnes(int[] nums) {
+        int count = 0;
+        int MaxCount = 0;
+        for(int i=0;i<nums.length;i++){
+            if(nums[i] == 1){
+                count ++;
+            }else{
+                MaxCount = Math.max(MaxCount,count);
+                count = 0;
+            }
+        }
+        return Math.max(MaxCount,count);
+    }
+}
+```
+
+<img src="images/day63_1.png" style="zoom:80%;" />
+
+<img src="images/day63_2.png" style="zoom:80%;" />
+
+```java
+public static int longestOnes(int[] nums,int k){
+    int ans = 0;
+    for(int count =0,l=0,r=0;r<nums.length;++r){
+        if(nums[r] == 1){
+            ++count;
+        }
+        while (r-l+1-count>k){
+            if(nums[l++] == 1){
+                --count;
+            }
+        }
+        ans = Math.max(ans,r-l+1);
+    }
+    return ans;
+}
+```
+
+<img src="images/day64.png" style="zoom:80%;" />
+
+解题思路：计算不同代码块的数量。
+
+```java
+public static int GetFragment (String str) {
+    // write code here
+    int len = str.length();
+    int count = 1;
+    for(int i=0;i<len-1;i++){
+        if(str.charAt(i)!=str.charAt(i+1))
+            count ++;
+    }
+    return len/count;
+}
 ```
 
